@@ -1,3 +1,5 @@
+Repositorio referente ao curso Vue 3: explorando o framework da Alura.
+
 # alura-tracker
 
 ## Project setup
