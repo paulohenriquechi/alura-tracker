@@ -11,10 +11,20 @@ import Formulario from "../components/Formulario.vue";
 import Tarefa from "../components/Tarefa.vue";
 import ITarefa from "../interfaces/ITarefa";
 import Box from "../components/Box.vue";
+import { useStore } from "@/store";
+import { NOTIFICAR } from "@/store/tipo-mutacoes";
+import { TipoNotificacao } from "@/interfaces/INotificacao";
+import { notificacaoMixin } from "@/mixins/notificar";
 
 export default defineComponent({
   name: "Tarefas",
   components: { Formulario, Tarefa, Box },
+  setup() {
+    const store = useStore();
+    return {
+      store,
+    };
+  },
   data() {
     return {
       tarefas: [] as ITarefa[],
@@ -27,6 +37,13 @@ export default defineComponent({
   },
   methods: {
     salvarTarefa(tarefa: ITarefa) {
+      if (!tarefa.projeto) {
+        return notificacaoMixin.methods.notificar(
+          TipoNotificacao.FALHA,
+          "Não foi possivel salvar o projeto",
+          "É necessário associar a tarefa a um projeto"
+        );
+      }
       this.tarefas.push(tarefa);
     },
   },
