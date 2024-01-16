@@ -1,0 +1,45 @@
+{
+  "projetos": [
+    {
+      "id": "1",
+      "nome": "Alura Tracker"
+    },
+    {
+      "id": "376c",
+      "nome": "dsaad"
+    },
+    {
+      "id": "375c",
+      "nome": "sdaas"
+    }
+  ],
+  "tarefas": [
+    {
+      "id": 1,
+      "duracaoEmSegundos": 120,
+      "descricao": "Configuracoes do ambiente",
+      "projeto": {
+        "id": 1,
+        "nome": "Alura Tracker"
+      }
+    },
+    {
+      "id": "cba1",
+      "descricao": "dsadas",
+      "duracaoEmSegundos": 1,
+      "projeto": {
+        "id": "1",
+        "nome": "Alura Tracker"
+      }
+    },
+    {
+      "id": "e917",
+      "descricao": "aaaa",
+      "duracaoEmSegundos": 1,
+      "projeto": {
+        "id": "f3f7",
+        "nome": "eua e"
+      }
+    }
+  ]
+}
