@@ -18,66 +18,64 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import { useStore } from "@/store";
 import { TipoNotificacao } from "@/interfaces/INotificacao";
 import useNotificador from "@/hooks/notificador";
 import { ALTERAR_PROJETO, CADASTRAR_PROJETO } from "@/store/tipo-acoes";
+import { useRouter } from "vue-router";
 // import { notificacaoMixin } from "@/mixins/notificar";
 
 export default defineComponent({
   name: "Formulario",
-  setup() {
-    const store = useStore();
-    const { notificar } = useNotificador();
-    return {
-      store,
-      notificar,
-    };
-  },
-  // mixins: [notificacaoMixin],
   props: {
     id: {
       type: String,
     },
   },
-  data() {
-    return {
-      nomeDoProjeto: "",
-    };
-  },
-  mounted() {
-    if (this.id) {
-      const projeto = this.store.state.projeto.projetos.find(
-        (projeto) => projeto.id == this.id
+  setup(props) {
+    const router = useRouter();
+    const store = useStore();
+    const { notificar } = useNotificador();
+    const nomeDoProjeto = ref("");
+
+    if (props.id) {
+      const projeto = store.state.projeto.projetos.find(
+        (projeto) => projeto.id == props.id
       );
-      this.nomeDoProjeto = projeto?.nome || "";
+      nomeDoProjeto.value = projeto?.nome || "";
     }
-  },
-  methods: {
-    salvar() {
-      if (this.id) {
-        this.store
+
+    const salvar = () => {
+      if (props.id) {
+        store
           .dispatch(ALTERAR_PROJETO, {
-            id: this.id,
-            nome: this.nomeDoProjeto,
+            id: props.id,
+            nome: nomeDoProjeto.value,
           })
-          .then(() => this.lidarComSucesso());
+          .then(() => lidarComSucesso());
       } else {
-        this.store
-          .dispatch(CADASTRAR_PROJETO, this.nomeDoProjeto)
-          .then(() => this.lidarComSucesso());
+        store
+          .dispatch(CADASTRAR_PROJETO, nomeDoProjeto.value)
+          .then(() => lidarComSucesso());
       }
-    },
-    lidarComSucesso() {
-      this.nomeDoProjeto = "";
-      this.notificar(
+    };
+
+    const lidarComSucesso = () => {
+      nomeDoProjeto.value = "";
+      notificar(
         TipoNotificacao.SUCESSO,
         "Excelente!",
         "O projeto foi salvo com sucesso"
       );
-      this.$router.push("/projetos");
-    },
+      router.push("/projetos");
+    };
+
+    return {
+      nomeDoProjeto,
+      salvar,
+    };
   },
+  // mixins: [notificacaoMixin],
 });
 </script>

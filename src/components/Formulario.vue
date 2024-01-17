@@ -1,5 +1,5 @@
 <template>
-  <div class="box" :style="estilos">
+  <div class="box">
     <div class="columns">
       <div
         class="column is-5"
@@ -35,39 +35,44 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import Temporizador from "@/components/Temporizador.vue";
 import { useStore } from "@/store";
 
 export default defineComponent({
   name: "Formulario",
-  setup() {
+  setup(props, { emit }) {
     const store = useStore();
+    const descricao = ref("");
+    const idProjeto = ref("");
+    const projetos = computed(() => store.state.projeto.projetos);
+
+    const finalizarTarefa = (tempoDecorrido: number): void => {
+      emit("aoSalvarTarefa", {
+        descricao: descricao.value,
+        duracaoEmSegundos: tempoDecorrido,
+        projeto: projetos.value.find(
+          (projeto) => projeto.id == idProjeto.value
+        ),
+      });
+      descricao.value = "";
+    };
+
     return {
-      projetos: computed(() => store.state.projeto.),
+      projetos,
+      descricao,
+      idProjeto,
+      finalizarTarefa,
     };
   },
   components: { Temporizador },
   emits: ["aoSalvarTarefa"],
-  data() {
-    return {
-      descricao: "",
-      idProjeto: "",
-      estilos: {
-        color: "var(--texto-primario)",
-        backgroundColor: "var(--bg-primario)",
-      },
-    };
-  },
-  methods: {
-    finalizarTarefa(tempoDecorrido: number): void {
-      this.$emit("aoSalvarTarefa", {
-        descricao: this.descricao,
-        duracaoEmSegundos: tempoDecorrido,
-        projeto: this.projetos.find((projeto) => projeto.id == this.idProjeto),
-      });
-      this.descricao = "";
-    },
-  },
 });
 </script>
+
+<style scoped>
+.box {
+  color: var(--texto-primario);
+  background-color: var(--bg-primario);
+}
+</style>
